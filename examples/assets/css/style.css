@@ -1,0 +1,63 @@
+body{
+  margin-top: 10px;
+  background-color: #eeeeee;
+}
+
+.title{
+  margin-bottom: 20px;
+  color: #b94a48;
+  border-bottom: 5px solid #b94a48;
+}
+
+.title .glyphicon{
+  font-size: 30px;
+  color: #000;
+}
+
+.title h1{
+  font-weight: bold;
+}
+
+.example{
+  max-width: 900px;
+  margin: auto;
+}
+
+.ftl_search{
+  max-width: 200px;
+  float: right;
+  margin-bottom: 10px;
+}
+
+.pagination{
+  float: right;
+  margin-top: 0px;
+}
+
+.pagination li.active a{
+  background-color: #DCDCDC;
+}
+
+.ftl_per_page{
+  width: 50px;
+  height: 34px !important;
+  float: right;
+  margin-right: 20px;
+}
+
+.record_count {
+  margin-left: 20px;
+}
+
+#spinner {
+  font-size: 18px;
+  margin-left: 10px;
+  display: none;
+}
+
+#found{
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+
