@@ -208,11 +208,12 @@
       this.renderPagination(this.pageCount(), this.current_page);
     }
 
+    this.execCallbacks('after_add');
     this.execCallbacks('pagination');
   };
 
   _F.fetchData = function(){
-    var _self = this, params = {q: $(this.opts.search_input).val()}
+    var _self = this, params = {q: this.last_search_text}
 
     if (this.opts.fetch_data_limit) {
       params['limit'] = this.opts.fetch_data_limit;
@@ -222,19 +223,20 @@
     $.getJSON(this.opts.data_url, params).done(function(data){
       _self.addData(data);
 
-      if (params.limit != null && data.length > 0) clearTimeout(_self.timer);
+      if (params.limit != null && !data) clearTimeout(_self.timer);
     });
   };
 
   _F.clearTimer = function(){
-    if (_self.timer) clearTimeout(this.timer);
+    if (this.timer) clearTimeout(this.timer);
   };
 
   _F.streamData = function(time){
     if (!this.opts.data_url) return;
-    var _self = this, timer;
+    var _self = this, timer, timer_func;
 
-    _self.timer = setTimeout(function(){
+    timer_func = this.opts.fetch_data_limit ? setInterval : setTimeout;
+    _self.timer = timer_func(function(){
       _self.fetchData();
     }, time);
   };

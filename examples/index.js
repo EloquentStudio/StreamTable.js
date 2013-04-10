@@ -32,9 +32,16 @@ $(document).ready(function() {
 
   $('#add_more').on('click', function(){
     $('#spinner').show();
-    addMovies();
+    addMovies(5);
     return false;
   });
+
+
+  //Simulate ajax json
+
+
+  $.getJSON('data/movies.data').done(function(data){
+  }).fail(function(e){ console.log(e)});
 
 });
 
