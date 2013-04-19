@@ -152,7 +152,7 @@ stream table has pagination, before_add and after_add data callbacks.
 ```javascript
 var callbacks = {
   pagination: function(summary){
-    $('#summary).text( summary.from + ' to '+ summary.to +' of '+ summary.total +' entries');
+    $('#summary').text( summary.from + ' to '+ summary.to +' of '+ summary.total +' entries');
   },
   after_add: function(){
     $('#records_count').text(this.data.length);
