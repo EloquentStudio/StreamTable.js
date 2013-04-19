@@ -5,4 +5,5 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 /_tmp
+/_gh_pages
 *.DS_Store

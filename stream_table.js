@@ -1,24 +1,36 @@
+/*
+ * StreamTable.js
+ * version: 1.0 (28/3/2013)
+ *
+ * Licensed under the MIT:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *
+ * Copyright 2013 Jiren Patel[ jiren@joshsoftware.com ]
+ *
+ * Dependency:
+ *  jQuery(v1.8 >=)
+ */
+
 (function(window, $) {
 
   'use strict';
 
-  var FilterTable = function(container, opts, data) {
-    return new _FilterTable(container, opts, data);
+  var StreamTable = function(container, opts, data) {
+    return new _StreamTable(container, opts, data);
   };
 
-  $.fn.filterTable = function (opts, data) {
-    var $this = $(this), flt; 
-
-    $this.data('flt', (flt = new _FilterTable($this, opts, data)));
-    return flt;
+  $.fn.stream_table = function (opts, data) {
+    var $this = $(this); 
+    if ($this.data('st')) return;
+    $this.data('st', new _StreamTable($this, opts, data));
   };
 
-  window.FilterTable = FilterTable;
+  window.StreamTable = StreamTable;
 
-  var _FilterTable = function(container, opts, data) {
+  var _StreamTable = function(container, opts, data) {
     this.data = [];
-    this.table = container;
-    this.$container = $(container).find('tbody');
+    this.main_container = container;
+    this.$container = $(container);
     this.opts = opts;
     this.view = this.opts.view;
     this.text_index = [];
@@ -32,10 +44,11 @@
 
     if (!this.view) $.error('Add view function in options.');
     
-    this.initPagination(this.opts.pagination || {});
+    if (this.$container.get(0).tagName == 'TABLE') this.$container = this.$container.find('tbody');
 
-    if (!this.opts.search_input) this.opts.search_input = this._addSearchBox();
-    if (this.paging_opts.per_page_select) this._addPerPage();
+    this.initPagination(this.opts.pagination || {});
+    this.addSearchBox();
+    this.addPerPage();
 
     if (data) {
       this.addData(data);
@@ -46,36 +59,36 @@
     this.streamData(this.stream_after);
   }
 
-  var _F = _FilterTable.prototype;
+  var _F = _StreamTable.prototype;
 
   _F.initPagination = function(opts){
     this.paging_opts = $.extend({
       span: 5,
       prev_text: '&laquo;',
       next_text: '&laquo;',
-      per_page_select: '.ftl_per_page',
-      per_page: 10,
+      per_page_select: true,
       per_page_opts: [10,25,50],
     }, opts);
 
-    this.paging_opts.container_class = ['flt_pagination', opts.container_class].join(' ');
+    this.paging_opts.per_page = this.paging_opts.per_page_opts[0] || 10;
+    this.paging_opts.container_class = ['st_pagination', opts.container_class].join(' ');
     this.paging_opts.ul_class = ['pagination', opts.ul_class].join(' ');
-    this.paging_opts.per_page_class = ['ftl_per_page', opts.per_page_class].join(' ');
+    this.paging_opts.per_page_class = ['st_per_page', opts.per_page_class].join(' ');
     this.opts.pagination = this.paging_opts;
 
-    $(this.table).after('<div class="'+ this.paging_opts.container_class  +'"></div>');
-    this.$pagination = $('.flt_pagination'); 
+    $(this.main_container).after('<div class="'+ this.paging_opts.container_class  +'"></div>');
+    this.$pagination = $('.st_pagination'); 
   };
 
   _F.bindEvents = function(){
     var _self = this, 
-        search_input = this.opts.search_input;
+        search_box = this.opts.search_box;
 
-    $(search_input).on('keyup', function(e){
+    $(search_box).on('keyup', function(e){
       _self.search($(this).val());
     });
 
-    $(search_input).on('keypress', function(e){
+    $(search_box).on('keypress', function(e){
       if ( e.keyCode == 13 ) return false;
     });
 
@@ -97,8 +110,8 @@
 
       current_page = _self.paginate(page);
       if (current_page >= 0) {
-        $('.flt_pagination .active').removeClass('active');
-        $('.flt_pagination li[data-page='+ current_page +']').addClass('active');
+        $('.st_pagination .active').removeClass('active');
+        $('.st_pagination li[data-page='+ current_page +']').addClass('active');
       }
 
       return false;
@@ -106,15 +119,16 @@
 
   };
 
-  _F._addSearchBox = function(){
-    $(this.table).before('<input name="search" type="text" id="ftl_search" class="ftl_search" placeholder="Type here...">');
-    return '#ftl_search';
+  _F.addSearchBox = function(){
+    if (this.opts.search_box) return;
+    $(this.main_container).before('<input name="search" type="text" id="st_search" class="st_search" placeholder="Type here...">');
+    this.opts.search_box = '#st_search';
   };
 
   _F._makeTextFunc = function(record){
     var fields = this.opts.fields, cond_str = [], textFunc, is_array = false;
 
-    if (record.toString() == '[object Object]'){
+    if (typeof record == 'object'){
       fields = fields || Object.keys(record)
 
       for (var i = 0, l = fields.length; i < l; i++){
@@ -144,7 +158,7 @@
 
     for(i; i < l; i++)
       this.text_index.push(this.textFunc(data[i]));
-  }
+  };
 
   _F.render = function(data, page){
     var i = (page * this.paging_opts.per_page), 
@@ -168,11 +182,9 @@
 
     if(q.length == 0 ){
       this.render(this.data, 0);
-      count = this.data.length
     }else{
       this.last_search_result = this.searchInData(q);
       this.render(this.last_search_result, 0);
-      count = this.last_search_result.length
     } 
 
     this.current_page = 0;
@@ -193,8 +205,6 @@
   _F.addData = function(data){
     data = this.execCallbacks('before_add', data) || data;
 
-    var i = 0, l = data.length, t;
-
     if (data.length){
       this.buildTextIndex(data);
       this.data = this.data.concat(data);
@@ -206,10 +216,10 @@
       }
 
       this.renderPagination(this.pageCount(), this.current_page);
+      this.execCallbacks('after_add');
+      this.execCallbacks('pagination');
     }
 
-    this.execCallbacks('after_add');
-    this.execCallbacks('pagination');
   };
 
   _F.fetchData = function(){
@@ -238,18 +248,19 @@
     timer_func = this.opts.fetch_data_limit ? setInterval : setTimeout;
     _self.timer = timer_func(function(){
       _self.fetchData();
+      if( !_self.opts.fetch_data_limit) clearTimeout(_self.timer);
     }, time);
   };
 
   _F.pageCount = function(){
-    if (this.last_search_text.length > 0){
+    if (this.last_search_text){
       return Math.ceil(this.last_search_result.length/this.paging_opts.per_page);
     }else{
       return Math.ceil(this.data.length/this.paging_opts.per_page);
     }
   };
 
-  //Render table rows for given page;
+  //Render table rows for given page
   _F.paginate = function(page){
     var page_count = this.pageCount();
 
@@ -263,7 +274,7 @@
 
     if (page == this.current_page || page < 0 || page >= page_count) return;
 
-    if (this.last_search_text.length > 0){
+    if (this.last_search_text){
       this.render(this.last_search_result, page)
     }else{
       this.render(this.data, page)
@@ -310,16 +321,20 @@
     this.$pagination.html(links.join(''));
   };
 
-  _F._addPerPage = function(){
-    var html = ['<select size="1" name="per_page" class="'+ this.paging_opts.per_page_class +'">'];
-    var arr = this.paging_opts.per_page_opts;
+  _F.addPerPage = function(){
+    var per_page_select = this.paging_opts.per_page_select, html, arr;
+
+    if (per_page_select === false || typeof per_page_select == 'string') return;
+    this.paging_opts.per_page_select = '.st_per_page';
+
+    html = ['<select size="1" name="per_page" class="'+ this.paging_opts.per_page_class +'">'];
+    arr = this.paging_opts.per_page_opts;
 
     for(var i = 0, l = arr.length; i < l; i ++)
         html.push('<option value="'+ arr[i] + '">'+ arr[i] +'</option>');
 
     html.push('</select>');
-
-    $(this.table).before(html.join(' '));
+    $(this.main_container).before(html.join(''));
   };
 
   _F.renderByPerPage = function(per_page){
@@ -328,11 +343,12 @@
     this.paging_opts.per_page = parseInt(per_page);
     this.current_page = 0;
 
-    if(this.last_search_text.length == 0 ){
+    if(this.last_search_text){
       this.render(this.data, 0);
     }else{
       this.render(this.last_search_result, 0);
     }
+
     this.renderPagination(this.pageCount(), 0);
     this.execCallbacks('pagination');
   };
@@ -347,7 +363,7 @@
       args = {
         from:  (f + 1), 
         to:    (this.paging_opts.per_page + f),
-        total: (this.last_search_text.length > 0 ? this.last_search_result.length : this.data.length),
+        total: (this.last_search_text ? this.last_search_result.length : this.data.length),
         page:  this.current_page 
       }
 
@@ -358,8 +374,8 @@
     return callback.call(this, args);
   };
 
-  FilterTable.extend = function (name, f ) {
-    _FilterTable.prototype[name] = function () {
+  StreamTable.extend = function (name, f ) {
+    _StreamTable.prototype[name] = function () {
       return f.apply( this, arguments );
     };
   };

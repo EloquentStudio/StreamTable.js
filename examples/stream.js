@@ -4,28 +4,28 @@ $(document).ready(function() {
   var view = function(record, index){
     return template({record: record, index: index});
   };
-  var $summery = $('#summery');
+  var $summary = $('#summary');
   var $found = $('#found');
   var $record_count = $('#record_count');
 
   $('#found').hide();
 
   var callbacks = {
-    pagination: function(summery){
-      if ($.trim($('#ftl_search').val()).length > 0){
-        $found.text('Found : '+ summery.total).show();
+    pagination: function(summary){
+      if ($.trim($('#st_search').val()).length > 0){
+        $found.text('Found : '+ summary.total).show();
       }else{
         $found.hide();
       }
-      $summery.text( summery.from + ' to '+ summery.to +' of '+ summery.total +' entries');
+      $summary.text( summary.from + ' to '+ summary.to +' of '+ summary.total +' entries');
     },
     after_add: function(){
       var percent = this.data.length*100/2000;
-      $record_count.text(this.data.length + ' ('+ percent +'%)').attr('style', 'width:' + percent + '%');
+      $record_count.text(percent + '%').attr('style', 'width:' + percent + '%');
     }
   }
 
-  ft = FilterTable('#filter_table',
+  ft = StreamTable('#stream_table',
     { view: view, 
       per_page: 10, 
       data_url: 'data/movies.json',
@@ -39,8 +39,7 @@ $(document).ready(function() {
   //Only for example: Stop ajax streaming beacause from localfile data size never going to empty.
   var timer = setTimeout(function(){
     ft.clearTimer();
-    $('.example .progress').removeClass('active');
-    clearTimeout(timer);
+    $('.example .progress').removeClass('active').hide();
    }, 10*1000);
 
 });
