@@ -225,7 +225,7 @@ Now, you can add more data manually.
 Demo
 ----
 
-[Basic Table](http://jiren.github.io/StreamTable.js/examples/index.html)
+[Basic Table](http://jiren.github.io/StreamTable.js/index.html)
 
 [Streaming Table](http://jiren.github.io/StreamTable.js/stream.html)
 

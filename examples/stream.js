@@ -1,4 +1,4 @@
-var ft;
+var st; //For debuggin only
 $(document).ready(function() {
   var data = Movies[1], html = $.trim($("#template").html()), template = Mustache.compile(html);
   var view = function(record, index){
@@ -25,7 +25,7 @@ $(document).ready(function() {
     }
   }
 
-  ft = StreamTable('#stream_table',
+  st = StreamTable('#stream_table',
     { view: view, 
       per_page: 10, 
       data_url: 'data/movies.json',
