@@ -22,6 +22,13 @@ $(document).ready(function() {
     after_add: function(){
       var percent = this.data.length*100/2000;
       $record_count.text(percent + '%').attr('style', 'width:' + percent + '%');
+
+      //Only for example: Stop ajax streaming beacause from localfile data size never going to empty.
+      if (this.data.length == 2000){
+        this.clearTimer();
+        $('.example .progress').removeClass('active').hide();
+      }
+
     }
   }
 
@@ -37,10 +44,12 @@ $(document).ready(function() {
   , data);
 
   //Only for example: Stop ajax streaming beacause from localfile data size never going to empty.
+  /*
   var timer = setTimeout(function(){
-    ft.clearTimer();
+    st.clearTimer();
     $('.example .progress').removeClass('active').hide();
    }, 10*1000);
+  */ 
 
 });
 
