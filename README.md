@@ -17,7 +17,7 @@ StreamTable has 3 arguments: the container (table) css selector, options and JSO
 
 ```javascript
 var options = {
-	view: view,                  //View function to render table rows.
+  view: view,                  //View function to render table rows.
   data_url: 'data/data.json',  //Data fetching url
   stream_after: 2,             //Start streaming after 2 secs
   fetch_data_limit: 500,       //Streaming data in batch of 500 
@@ -129,17 +129,17 @@ Pagination Options:
 -------------------
 
 ```javascript
-	pagination: {
-		span: 5,                               //Max Pagination span window.
-		next_text: 'Next &rarr;',              
-		prev_text: '&larr; Previous',
-		container_class: '.users-pagination',  //Add pagination div class. Default  is .st_pagination.
-		ul_class: '.larger-pagination',        //Add pagination ul class. Default is  .pagination.
-		per_page_select: true,                 //Show per page select box. Default us true.
-		per_page_opts: [10, 25, 50],           //Per Page select box options. Default is [10, 25, 50].
-		per_page_class: '.select-box'          //Per page select box class. Default is .st_per_page.
-		per_page: 20                           //Show number of record per page. Defalut 10.
-	}
+pagination: {
+  span: 5,                               //Max Pagination span window.
+	next_text: 'Next &rarr;',              
+	prev_text: '&larr; Previous',
+	container_class: '.users-pagination',  //Add pagination div class. Default  is .st_pagination.
+	ul_class: '.larger-pagination',        //Add pagination ul class. Default is  .pagination.
+	per_page_select: true,                 //Show per page select box. Default us true.
+	per_page_opts: [10, 25, 50],           //Per Page select box options. Default is [10, 25, 50].
+	per_page_class: '.select-box'          //Per page select box class. Default is .st_per_page.
+	per_page: 20                           //Show number of record per page. Defalut 10.
+}
 ```  
 
 If per_page_select is set to false, it will not show per page select box. If you have already select box for this then you can set selector of it i.e per_page_select: '#my-per-page'. If you are not using per page select box then you can set number of records you want to show on a page using 'per_page'.
@@ -151,23 +151,23 @@ stream table has pagination, before_add and after_add data callbacks.
 
 ```javascript
 var callbacks = {
-    pagination: function(summary){
-        $('#summary).text( summary.from + ' to '+ summary.to +' of '+ summary.total +' entries');
-    },
-    after_add: function(){
-      	$('#records_count').text(this.data.length);
-		},
-		before_add: function(data){
-			  var new_data = [], d;
+  pagination: function(summary){
+    $('#summary).text( summary.from + ' to '+ summary.to +' of '+ summary.total +' entries');
+  },
+  after_add: function(){
+    $('#records_count').text(this.data.length);
+  },
+	before_add: function(data){
+    var new_data = [], d;
 			
-			  for(id in data){
-				  d = data[id].push(id);
-				  new_data.push(d);
-			  }
+		for(id in data){
+	    d = data[id].push(id);
+			new_data.push(d);
+		}
 			
-			  return new_data;
-	  }	
-  }
+		return new_data;
+	}	
+}
 ```  
 
 
@@ -178,6 +178,7 @@ var callbacks = {
 3. before_add: This will execute before adding data. One use is to change data format to one that is compatible with streamTable. Remember to return the changed data. i.e if the data format is like {1: ['user-1', 10], 2: ['user-2', 100]}, we can convert it to an array of objects or an array of arrays, according to your view template.
 
 After the conversion, the data MUST look like this:
+
 	[[1,'user-1', 10], [2,'user-2', 100]] 
 
 	OR 
