@@ -222,6 +222,13 @@ Now, you can add more data manually.
 
     st.addData(data);
 
+Demo
+----
+
+[Basic Table](http://jiren.github.io/StreamTable.js/examples/index.html)
+
+[Streaming Table](http://jiren.github.io/StreamTable.js/stream.html)
+
 
 Contributing
 ------------
