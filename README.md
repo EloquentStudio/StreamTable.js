@@ -157,16 +157,15 @@ var callbacks = {
   after_add: function(){
     $('#records_count').text(this.data.length);
   },
-	before_add: function(data){
+  before_add: function(data){
     var new_data = [], d;
-			
-		for(id in data){
-	    d = data[id].push(id);
-			new_data.push(d);
-		}
-			
-		return new_data;
-	}	
+
+    for(id in data){
+      d = data[id].push(id);
+      new_data.push(d);
+    }
+    return new_data;
+  }	
 }
 ```  
 
