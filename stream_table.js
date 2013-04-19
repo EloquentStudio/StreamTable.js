@@ -19,6 +19,8 @@
     return new _StreamTable(container, opts, data);
   };
 
+  StreamTable.VERSION = '1.0.0';
+
   $.fn.stream_table = function (opts, data) {
     var $this = $(this); 
     if ($this.data('st')) return;
