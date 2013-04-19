@@ -1,0 +1,84 @@
+body{
+  margin-top: 10px;
+  background-color: #eeeeee;
+}
+
+.title{
+  margin-bottom: 20px;
+  color: #b94a48;
+  border-bottom: 5px solid #b94a48;
+}
+
+.title .glyphicon{
+  font-size: 30px;
+  color: #000;
+}
+
+.title h1{
+  font-weight: bold;
+}
+
+.title .lead{
+  margin-bottom: 20px;
+  font-size: 21px;
+  font-weight: 200;
+  line-height: 1.4;
+}
+
+.example{
+  max-width: 900px;
+  margin: auto;
+}
+
+.st_search{
+  max-width: 200px;
+  float: right;
+  margin-bottom: 10px;
+}
+
+.pagination{
+  float: right;
+  margin-top: 0px;
+}
+
+.pagination li.active a{
+  background-color: #DCDCDC;
+}
+
+.st_per_page{
+  width: 50px;
+  height: 34px !important;
+  float: right;
+  margin-right: 20px;
+}
+
+.record_count {
+  margin-left: 20px;
+}
+
+#spinner {
+  font-size: 18px;
+  margin-left: 10px;
+  display: none;
+}
+
+#found{
+  margin-left: 10px;
+  font-size: 16px;
+  line-height: 33px;
+}
+
+.example .progress{
+  width: 400px;
+  display: inline-block;
+  height: 32px;
+  line-height: 34px;
+  float: left;
+  background-color: #90EFC4;
+}
+
+.example .progress .progress-bar{
+  font-size: 20px;
+  color: #8B0000;
+}
+
