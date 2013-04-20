@@ -130,7 +130,7 @@
   _F._makeTextFunc = function(record){
     var fields = this.opts.fields, cond_str = [], textFunc, is_array = false;
 
-    if (typeof record == 'object'){
+    if (record.constructor.name == 'Object'){
       fields = fields || Object.keys(record)
 
       for (var i = 0, l = fields.length; i < l; i++){
@@ -393,3 +393,12 @@ if (!Array.prototype.indexOf) {
     return -1;
   }
 }
+
+if (!Object.keys) {
+  Object.keys = function(obj){
+    var f, fields = [];
+    for(f in obj) fields.push(f);
+    return fields;
+  }
+}
+
