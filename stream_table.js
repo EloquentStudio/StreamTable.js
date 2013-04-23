@@ -255,7 +255,7 @@
   };
 
   _F.pageCount = function(){
-    if (this.last_search_text){
+    if (this.last_search_text.length > 0){
       return Math.ceil(this.last_search_result.length/this.paging_opts.per_page);
     }else{
       return Math.ceil(this.data.length/this.paging_opts.per_page);
@@ -276,7 +276,7 @@
 
     if (page == this.current_page || page < 0 || page >= page_count) return;
 
-    if (this.last_search_text){
+    if (this.last_search_text.length > 0){
       this.render(this.last_search_result, page)
     }else{
       this.render(this.data, page)
@@ -345,7 +345,7 @@
     this.paging_opts.per_page = parseInt(per_page);
     this.current_page = 0;
 
-    if(this.last_search_text){
+    if(this.last_search_text.length == 0){
       this.render(this.data, 0);
     }else{
       this.render(this.last_search_result, 0);
@@ -365,7 +365,7 @@
       args = {
         from:  (f + 1), 
         to:    (this.paging_opts.per_page + f),
-        total: (this.last_search_text ? this.last_search_result.length : this.data.length),
+        total: (this.last_search_text.length > 0 ? this.last_search_result.length : this.data.length),
         page:  this.current_page 
       }
 
