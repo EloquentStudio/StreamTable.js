@@ -130,7 +130,7 @@
   _F._makeTextFunc = function(record){
     var fields = this.opts.fields, cond_str = [], textFunc, is_array = false;
 
-    if (typeof record == 'object'){
+    if (record.constructor.name == 'Object'){
       fields = fields || Object.keys(record)
 
       for (var i = 0, l = fields.length; i < l; i++){
@@ -255,7 +255,7 @@
   };
 
   _F.pageCount = function(){
-    if (this.last_search_text){
+    if (this.last_search_text.length > 0){
       return Math.ceil(this.last_search_result.length/this.paging_opts.per_page);
     }else{
       return Math.ceil(this.data.length/this.paging_opts.per_page);
@@ -276,7 +276,7 @@
 
     if (page == this.current_page || page < 0 || page >= page_count) return;
 
-    if (this.last_search_text){
+    if (this.last_search_text.length > 0){
       this.render(this.last_search_result, page)
     }else{
       this.render(this.data, page)
@@ -345,7 +345,7 @@
     this.paging_opts.per_page = parseInt(per_page);
     this.current_page = 0;
 
-    if(this.last_search_text){
+    if(this.last_search_text.length == 0){
       this.render(this.data, 0);
     }else{
       this.render(this.last_search_result, 0);
@@ -365,7 +365,7 @@
       args = {
         from:  (f + 1), 
         to:    (this.paging_opts.per_page + f),
-        total: (this.last_search_text ? this.last_search_result.length : this.data.length),
+        total: (this.last_search_text.length > 0 ? this.last_search_result.length : this.data.length),
         page:  this.current_page 
       }
 
@@ -393,3 +393,12 @@ if (!Array.prototype.indexOf) {
     return -1;
   }
 }
+
+if (!Object.keys) {
+  Object.keys = function(obj){
+    var f, fields = [];
+    for(f in obj) fields.push(f);
+    return fields;
+  }
+}
+
