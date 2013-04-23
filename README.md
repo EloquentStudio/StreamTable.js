@@ -113,7 +113,7 @@ if 'fetch_data_limit' option is not define then stream table will send only one 
 
 **Note:** Since the first page is being loaded with initial data, remember that the stream data request should send the **remaining** data and not all the data. Otherwise, you would have duplidate data that was loaded initially.
 
-Serchbox: 
+Searchbox: 
 ---------
 If searchbox option is not defined, then by default search box going to be added at the top of the table with class '.st_search' and id '#st_search'.
 If you have already searcbox then you can set the selector.
