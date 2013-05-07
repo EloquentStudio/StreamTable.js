@@ -43,13 +43,5 @@ $(document).ready(function() {
     }
   , data);
 
-  //Only for example: Stop ajax streaming beacause from localfile data size never going to empty.
-  /*
-  var timer = setTimeout(function(){
-    st.clearTimer();
-    $('.example .progress').removeClass('active').hide();
-   }, 10*1000);
-  */ 
-
 });
 

@@ -44,6 +44,10 @@
     this.timer = null;
     this.opts.callbacks = this.opts.callbacks || {};
 
+    //For sorting
+    this.records_index = []
+    this.sorting_opts = {};
+
     if (!this.view) $.error('Add view function in options.');
     
     if (this.$container.get(0).tagName == 'TABLE') this.$container = this.$container.find('tbody');
@@ -54,10 +58,11 @@
 
     if (data) {
       this.addData(data);
-      this.render(this.data, 0);
+      this.render(this.records_index, 0);
     }
 
     this.bindEvents();
+    this.bindSortingEvents();
     this.streamData(this.stream_after);
   }
 
@@ -162,15 +167,15 @@
       this.text_index.push(this.textFunc(data[i]));
   };
 
-  _F.render = function(data, page){
+  _F.render = function(index, page){
     var i = (page * this.paging_opts.per_page), 
         l = (i + this.paging_opts.per_page), 
         eles = [];
 
-    if (data.length < l) l = data.length;
+    if (index.length < l) l = index.length;
 
     for (i; i < l; i++)
-      eles.push(this.view(data[i], (i+1)));
+      eles.push(this.view(this.data[index[i]], (i+1)));
     
     this.$container.html(eles);
   };
@@ -183,7 +188,7 @@
     this.last_search_text = q;
 
     if(q.length == 0 ){
-      this.render(this.data, 0);
+      this.render(this.records_index, 0);
     }else{
       this.last_search_result = this.searchInData(q);
       this.render(this.last_search_result, 0);
@@ -198,7 +203,8 @@
     var result = [], i = 0, l = this.text_index.length, t = text.toUpperCase();
 
     for (i; i < l; i++){
-      if (this.text_index[i].indexOf(t) != -1) result.push(this.data[i]);
+      //if (this.text_index[i].indexOf(t) != -1) result.push(this.data[i]);
+      if (this.text_index[i].indexOf(t) != -1) result.push(i);
     }
 
     return result;
@@ -208,8 +214,15 @@
     data = this.execCallbacks('before_add', data) || data;
 
     if (data.length){
+      var offset = this.records_index.length, i = offset, l = data.length + offset;
+
       this.buildTextIndex(data);
       this.data = this.data.concat(data);
+
+      for(i; i < l; i++)
+        this.records_index.push(i);
+
+      if (this.current_sorting) this.sort(this.current_sorting);
 
       if (this.last_search_text.length > 0){
         this.last_search_result = this.searchInData(this.last_search_text);
@@ -276,11 +289,10 @@
 
     if (page == this.current_page || page < 0 || page >= page_count) return;
 
-    if (this.last_search_text.length > 0){
-      this.render(this.last_search_result, page)
-    }else{
-      this.render(this.data, page)
-    }
+    this.render(
+      this.last_search_text.length > 0 ? this.last_search_result : this.records_index,
+      page
+    );
 
     this.current_page = page;
 
@@ -342,16 +354,18 @@
   _F.renderByPerPage = function(per_page){
     if (this.paging_opts.per_page == per_page) return;
 
+    //To maintain current page
+    var current_row = this.current_page*this.paging_opts.per_page + 1;
+
     this.paging_opts.per_page = parseInt(per_page);
-    this.current_page = 0;
+    this.current_page = Math.floor(current_row/this.paging_opts.per_page);
+    
+    this.render(
+      this.last_search_text.length == 0 ? this.records_index : this.last_search_result,
+      this.current_page
+    );
 
-    if(this.last_search_text.length == 0){
-      this.render(this.data, 0);
-    }else{
-      this.render(this.last_search_result, 0);
-    }
-
-    this.renderPagination(this.pageCount(), 0);
+    this.renderPagination(this.pageCount(), this.current_page);
     this.execCallbacks('pagination');
   };
 
@@ -374,6 +388,74 @@
     }
 
     return callback.call(this, args);
+  };
+
+  _F.bindSortingEvents = function(){
+    var self = this;
+    $(this.main_container + ' [data-sort]').each(function(i){
+      var $el = $(this)
+          ,arr = $el.data('sort').split(':')
+          ,data = { dir: arr[1] || 'asc', 
+                    type: arr[2] || 'string', 
+                    field: arr[0] };
+
+      self.sorting_opts[data.field] = {dir: data.dir, type: data.type, field: data.field }
+
+      $el.on('click', data, function(e){
+        var $this = $(this);
+
+        $this.addClass(e.data.dir);
+        self.current_sorting = {dir: e.data.dir, type: e.data.type, field: e.data.field};
+        self.sort(e.data);  
+        self.render(
+          self.last_search_text.length == 0 ? self.records_index : self.last_search_result,
+          self.current_page
+        );
+
+        e.data.dir = e.data.dir == 'asc' ? 'desc' : 'asc'; 
+        $(this).removeClass(e.data.dir);
+      });
+
+      //Start sorting initialy.
+      if(i == 0) $el.trigger('click');
+    });
+  };
+
+  _F.sort = function(options){
+    var data = this.data
+       ,sort_on = 'name'
+       ,index = this.last_search_result.length > 0 ?  this.last_search_result : this.records_index;
+
+    options.order = options.dir == 'asc' ? 1 : -1; 
+
+    return index.sort(this._sortingFunc(data, options));
+  };
+
+  _F._sortingFunc = function(data, options){ 
+    var field = options.field, order = options.order, type = options.type;
+    
+    //return this.sortingFuntions[type];
+
+    if (type ==  'number'){
+      return function(i, j){
+       return (data[i][field] - data[j][field]) * order;
+      }
+    }
+
+    if (type = 'date'){
+    }
+
+    return function(i, j){
+      var t1 = data[i][field].toLowerCase()
+        ,t2 = data[j][field].toLowerCase();
+
+      if (t1 < t2) return (-1 * order); 
+      if (t1 > t2) return (1 * order);
+      return 0;
+    }
+  };
+
+  _F.dateFormat = function(){
   };
 
   StreamTable.extend = function (name, f ) {

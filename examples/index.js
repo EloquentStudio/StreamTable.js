@@ -29,9 +29,6 @@ $(document).ready(function() {
    data
   );
 
-  // Jquery plugin
-  //$('#stream_table').stream_table({view: view}, data)
-
   $('.record_count .badge').text(data.length);
 
   $('#add_more').on('click', function(){
