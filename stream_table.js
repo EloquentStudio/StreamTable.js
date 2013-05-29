@@ -53,7 +53,7 @@
     this.addPerPage();
 
     if (data) {
-      this.addData(data);
+      data = this.addData(data);
       this.render(this.data, 0);
     }
 
@@ -222,6 +222,7 @@
       this.execCallbacks('pagination');
     }
 
+    return data;
   };
 
   _F.fetchData = function(){
@@ -233,7 +234,7 @@
     }
 
     $.getJSON(this.opts.data_url, params).done(function(data){
-      _self.addData(data);
+      data = _self.addData(data);
 
       if (params.limit != null && (!data || !data.length ) ) clearTimeout(_self.timer);
     });
