@@ -235,7 +235,7 @@
     $.getJSON(this.opts.data_url, params).done(function(data){
       _self.addData(data);
 
-      if (params.limit != null && !data) clearTimeout(_self.timer);
+      if (params.limit != null && (!data || !data.length ) ) clearTimeout(_self.timer);
     });
   };
 
