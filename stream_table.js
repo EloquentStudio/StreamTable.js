@@ -69,7 +69,7 @@
       prev_text: '&laquo;',
       next_text: '&laquo;',
       per_page_select: true,
-      per_page_opts: [10,25,50],
+      per_page_opts: [10,25,50]
     }, opts);
 
     this.paging_opts.per_page = this.paging_opts.per_page_opts[0] || 10;
