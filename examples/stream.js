@@ -25,7 +25,7 @@ $(document).ready(function() {
 
       //Only for example: Stop ajax streaming beacause from localfile data size never going to empty.
       if (this.data.length == 2000){
-        this.clearTimer();
+        this.stopStreaming();
         $('.example .progress').removeClass('active').hide();
       }
 

@@ -236,23 +236,36 @@
     $.getJSON(this.opts.data_url, params).done(function(data){
       data = _self.addData(data);
 
-      if (params.limit != null && (!data || !data.length ) ) clearTimeout(_self.timer);
+      if (params.limit != null && (!data || !data.length ) ) {
+        _self.stopStreaming();
+      }else{
+        _self.setStreamInterval();
+      }
+
     });
   };
 
-  _F.clearTimer = function(){
+  _F.setStreamInterval = function(){
+    var _self = this;
+    if(_self.opts.stop_streaming == true) return;
+
+    _self.timer = setTimeout(function(){
+      _self.fetchData();
+    }, _self.stream_after);
+  };
+
+  _F.stopStreaming = function(){
+    this.opts.stop_streaming = true;
     if (this.timer) clearTimeout(this.timer);
   };
 
   _F.streamData = function(time){
     if (!this.opts.data_url) return;
-    var _self = this, timer, timer_func;
+    var _self = this, timer;
 
-    timer_func = this.opts.fetch_data_limit ? setInterval : setTimeout;
-    _self.timer = timer_func(function(){
-      _self.fetchData();
-      if( !_self.opts.fetch_data_limit) clearTimeout(_self.timer);
-    }, time);
+    _self.setStreamInterval();
+
+    if(!_self.opts.fetch_data_limit) _self.stopStreaming();
   };
 
   _F.pageCount = function(){
