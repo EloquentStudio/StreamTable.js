@@ -1,4 +1,4 @@
-var ft;
+var st; //For debuggin only
 $(document).ready(function() {
   var data = Movies[1], html = $.trim($("#template").html()), template = Mustache.compile(html);
   var view = function(record, index){
@@ -23,15 +23,16 @@ $(document).ready(function() {
       var percent = this.data.length*100/2000;
       $record_count.text(percent + '%').attr('style', 'width:' + percent + '%');
 
-      //NOTE: For simulation only beacause streaming from local file data never going to empty.
-      if(this.data.length == 2000){
+      //Only for example: Stop ajax streaming beacause from localfile data size never going to empty.
+      if (this.data.length == 2000){
+        this.stopStreaming();
         $('.example .progress').removeClass('active').hide();
-        this.clearTimer();
       }
+
     }
   }
 
-  ft = StreamTable('#stream_table',
+  st = StreamTable('#stream_table',
     { view: view, 
       per_page: 10, 
       data_url: 'data/movies.json',
@@ -45,10 +46,10 @@ $(document).ready(function() {
   //Only for example: Stop ajax streaming beacause from localfile data size never going to empty.
   /*
   var timer = setTimeout(function(){
-    ft.clearTimer();
+    st.clearTimer();
     $('.example .progress').removeClass('active').hide();
    }, 10*1000);
-  */
+  */ 
 
 });
 
