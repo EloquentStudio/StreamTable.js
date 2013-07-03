@@ -215,6 +215,8 @@
         this.last_search_result = this.searchInData(this.last_search_text);
         //TODO: Process search or sorting
         this.render(this.last_search_result, this.current_page);
+      }else{
+        this.render(this.data, this.current_page);
       }
 
       this.renderPagination(this.pageCount(), this.current_page);
