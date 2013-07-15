@@ -244,6 +244,8 @@
         _self.setStreamInterval();
       }
 
+    }).fail(function(e){
+      _self.stopStreaming();
     });
   };
 
