@@ -185,6 +185,23 @@ After the conversion, the data MUST look like this:
 	[{user: {id: 1, name: 'user-1', amount: 10}}, {user: {id: 2, name: 'user-2', amount: 100}}]
 
 
+Sorting
+-------
+
+For adding sorting add sort options to table headers.
+
+
+```html
+<th data-sort="name:asc">Name (sort)</th>
+<th data-sort="director:desc">Director (sort)</th>
+```
+
+- 'name' is json record field and second option is initial sorting order.
+- While streaming if you want to enable live sorting then set option to 'auto_sorting' to 'true' in streamtable options.
+- Default auto sorting is disabled while streaming.
+- If you streaming large amount of data then preferable to set auto_sorting off because sorting will happened every time data add so it will take time to sort.
+
+
 Complete Options for reference:
 -------------------------------
 
@@ -193,6 +210,7 @@ var options = {
 	view: view,                  
 	data_url: 'data/data.json',
 	stream_after: 1,   
+	auto_sorting: true,  //Default is false
 	fetch_data_limit: 500, 
 	pagination:{
 		span: 5,                              
@@ -228,6 +246,8 @@ Demo
 [Basic Table](http://jiren.github.io/StreamTable.js/index.html)
 
 [Streaming Table](http://jiren.github.io/StreamTable.js/stream.html)
+
+[Streaming and sorting Table](http://jiren.github.io/StreamTable.js/sorting.html)
 
 
 Contributing
