@@ -1,6 +1,6 @@
 /*
  * StreamTable.js
- * version: 1.0 (28/3/2013)
+ * version: 1.1.0 (28/7/2013)
  *
  * Licensed under the MIT:
  *   http://www.opensource.org/licenses/mit-license.php
@@ -19,7 +19,7 @@
     return new _StreamTable(container, opts, data);
   };
 
-  StreamTable.VERSION = '1.0.0';
+  StreamTable.VERSION = '1.1.0';
 
   $.fn.stream_table = function (opts, data) {
     var $this = $(this); 
@@ -51,17 +51,37 @@
     this.initPagination(this.opts.pagination || {});
     this.addSearchBox();
     this.addPerPage();
+    this.has_sorting =  $(this.main_container + ' [data-sort]').length > 0 ? true : false;
+
+    if (this.has_sorting) {
+      this.sorting_opts = {};
+      this.records_index = [];
+      this.last_search_record_index = [];
+    }
 
     if (data) {
       data = this.addData(data);
-      this.render(this.data, 0);
+      this.render(0);
     }
 
     this.bindEvents();
+    this.bindSortingEvents();
     this.streamData(this.stream_after);
   }
 
   var _F = _StreamTable.prototype;
+
+  _F.getIndex = function(){
+    return this.last_search_text.length > 0 ? this.last_search_record_index : this.records_index
+  };
+
+  _F.getData = function(){
+    return this.last_search_text.length > 0 ? this.last_search_result : this.data;
+  };
+
+  _F.dataLength = function(){
+    return this.has_sorting ? this.getIndex().length : this.getData().length;
+  }
 
   _F.initPagination = function(opts){
     this.paging_opts = $.extend({
@@ -162,15 +182,24 @@
       this.text_index.push(this.textFunc(data[i]));
   };
 
-  _F.render = function(data, page){
+  _F.render = function(page){
     var i = (page * this.paging_opts.per_page), 
         l = (i + this.paging_opts.per_page), 
-        eles = [];
+        eles = [],
+        index,
+        d = this.has_sorting ? this.getIndex() : this.getData();
 
-    if (data.length < l) l = data.length;
+    if (d.length < l) l = d.length;
 
-    for (i; i < l; i++)
-      eles.push(this.view(data[i], (i+1)));
+    if (this.has_sorting){
+      for (i; i < l; i++){
+        eles.push(this.view(this.data[d[i]], (i+1)));
+      }
+    }else{
+      for (i; i < l; i++){
+        eles.push(this.view(d[i], (i+1)));
+      }
+    }
     
     this.$container.html(eles);
   };
@@ -183,10 +212,10 @@
     this.last_search_text = q;
 
     if(q.length == 0 ){
-      this.render(this.data, 0);
+      this.render(0);
     }else{
-      this.last_search_result = this.searchInData(q);
-      this.render(this.last_search_result, 0);
+      this.searchInData(q);
+      this.render(0);
     } 
 
     this.current_page = 0;
@@ -195,28 +224,50 @@
   };
 
   _F.searchInData = function(text){
-    var result = [], i = 0, l = this.text_index.length, t = text.toUpperCase();
+    var result = [], 
+        i = 0, 
+        l = this.text_index.length, 
+        t = text.toUpperCase(),
+        d = this.has_sorting ? this.records_index : this.data;
 
-    for (i; i < l; i++){
-      if (this.text_index[i].indexOf(t) != -1) result.push(this.data[i]);
+    if(this.has_sorting){
+      for (i; i < l; i++){
+        if (this.text_index[i].indexOf(t) != -1) result.push(i);
+      }
+      this.last_search_record_index = result
+    }else{
+      for (i; i < l; i++){
+        if (this.text_index[i].indexOf(t) != -1) result.push(this.data[i]);
+      }
+      this.last_search_result = result
     }
 
-    return result;
   };
 
   _F.addData = function(data){
     data = this.execCallbacks('before_add', data) || data;
 
     if (data.length){
+      var i = this.data.length, l = data.length + i;
+
       this.buildTextIndex(data);
       this.data = this.data.concat(data);
 
-      if (this.last_search_text.length > 0){
-        this.last_search_result = this.searchInData(this.last_search_text);
-        //TODO: Process search or sorting
-        this.render(this.last_search_result, this.current_page);
+      if(this.has_sorting){
+        for(i; i < l; i++){
+          this.records_index.push(i);
+        }
       }
 
+      if (this.last_search_text.length > 0){
+        this.searchInData(this.last_search_text);
+      }
+
+      if (this.opts.auto_sorting && this.current_sorting){
+        this.sort(this.current_sorting);
+      }
+
+      this.render(this.current_page);
       this.renderPagination(this.pageCount(), this.current_page);
       this.execCallbacks('after_add');
       this.execCallbacks('pagination');
@@ -242,6 +293,8 @@
         _self.setStreamInterval();
       }
 
+    }).fail(function(e){
+      _self.stopStreaming();
     });
   };
 
@@ -269,11 +322,7 @@
   };
 
   _F.pageCount = function(){
-    if (this.last_search_text.length > 0){
-      return Math.ceil(this.last_search_result.length/this.paging_opts.per_page);
-    }else{
-      return Math.ceil(this.data.length/this.paging_opts.per_page);
-    }
+    return Math.ceil(this.dataLength()/this.paging_opts.per_page);
   };
 
   //Render table rows for given page
@@ -290,12 +339,7 @@
 
     if (page == this.current_page || page < 0 || page >= page_count) return;
 
-    if (this.last_search_text.length > 0){
-      this.render(this.last_search_result, page)
-    }else{
-      this.render(this.data, page)
-    }
-
+    this.render(page);
     this.current_page = page;
 
     if (this.paging_opts.span <= page_count) this.renderPagination(page_count, this.current_page);
@@ -358,13 +402,7 @@
 
     this.paging_opts.per_page = parseInt(per_page);
     this.current_page = 0;
-
-    if(this.last_search_text.length == 0){
-      this.render(this.data, 0);
-    }else{
-      this.render(this.last_search_result, 0);
-    }
-
+    this.render(0)
     this.renderPagination(this.pageCount(), 0);
     this.execCallbacks('pagination');
   };
@@ -379,7 +417,7 @@
       args = {
         from:  (f + 1), 
         to:    (this.paging_opts.per_page + f),
-        total: (this.last_search_text.length > 0 ? this.last_search_result.length : this.data.length),
+        total: this.dataLength(), 
         page:  this.current_page 
       }
 
@@ -388,6 +426,62 @@
     }
 
     return callback.call(this, args);
+  };
+
+  _F.bindSortingEvents = function(){
+    var _self = this;
+
+    $(this.main_container + ' [data-sort]').each(function(i){
+      var $el = $(this)
+          ,arr = $el.data('sort').split(':')
+          ,data = { dir: arr[1] || 'asc', 
+                    type: arr[2] || 'string', 
+                    field: arr[0] };
+
+      _self.sorting_opts[data.field] = {dir: data.dir, type: data.type, field: data.field }
+
+      $el.on('click', data, function(e){
+        var $this = $(this);
+
+        $this.addClass(e.data.dir);
+        _self.current_sorting = {dir: e.data.dir, type: e.data.type, field: e.data.field};
+        _self.sort(e.data);  
+        _self.render(_self.current_page);
+
+        e.data.dir = e.data.dir == 'asc' ? 'desc' : 'asc'; 
+        $(this).removeClass(e.data.dir);
+      });
+
+      //Start sorting initialy.
+      if(i == 0) $el.trigger('click');
+    });
+  };
+
+  _F.sort = function(options){
+    options.order = options.dir == 'asc' ? 1 : -1; 
+
+    return this.getIndex().sort(this._sortingFunc(this.data, options));
+  };
+
+  _F._sortingFunc = function(data, options){ 
+    var field = options.field, order = options.order, type = options.type;
+    
+    //return this.sortingFuntions[type];
+
+    if (type ==  'number'){
+      return function(i, j){
+       return (data[i][field] - data[j][field]) * order;
+      }
+    }
+
+    return function(i, j){
+      var t1 = data[i][field].toLowerCase()
+        ,t2 = data[j][field].toLowerCase();
+
+      if (t1 < t2) return (-1 * order); 
+      if (t1 > t2) return (1 * order);
+      return 0;
+    }
   };
 
   StreamTable.extend = function (name, f ) {
