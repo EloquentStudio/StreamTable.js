@@ -92,14 +92,21 @@
       per_page_opts: [10,25,50],
     }, opts);
 
+    var p_classes = ['st_pagination'];
+
+    if (opts.container_class){
+      p_classes = [].concat.apply(p_classes, [opts.container_class])
+    }
+
     this.paging_opts.per_page = this.paging_opts.per_page_opts[0] || 10;
-    this.paging_opts.container_class = ['st_pagination', opts.container_class].join(' ');
+    this.paging_opts.container_class = p_classes.join(' ');
     this.paging_opts.ul_class = ['pagination', opts.ul_class].join(' ');
     this.paging_opts.per_page_class = ['st_per_page', opts.per_page_class].join(' ');
     this.opts.pagination = this.paging_opts;
 
     $(this.main_container).after('<div class="'+ this.paging_opts.container_class  +'"></div>');
-    this.$pagination = $('.st_pagination'); 
+
+    this.$pagination = $('.' + p_classes.join('.')); 
   };
 
   _F.bindEvents = function(){
