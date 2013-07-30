@@ -24,7 +24,7 @@
   $.fn.stream_table = function (opts, data) {
     var $this = $(this); 
     if ($this.data('st')) return;
-    $this.data('st', new _StreamTable($this, opts, data));
+    $this.data('st', new _StreamTable($this.selector, opts, data));
   };
 
   window.StreamTable = StreamTable;
