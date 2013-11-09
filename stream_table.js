@@ -157,7 +157,7 @@
   _F._makeTextFunc = function(record){
     var fields = this.opts.fields, cond_str = [], textFunc, is_array = false;
 
-    if (record.constructor.name == 'Object'){
+    if (record.constructor == Object){
       fields = fields || Object.keys(record)
 
       for (var i = 0, l = fields.length; i < l; i++){
