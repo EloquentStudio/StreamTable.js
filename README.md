@@ -3,6 +3,8 @@ StreamTable.js
 
 StreamTable.js streams data for tables in the background, updates and renders them using templating frameworks like Mustache.js, HandleBars.js 
 
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jiren/streamtable.js/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 Why StreamTable.js?
 -------------------
 
