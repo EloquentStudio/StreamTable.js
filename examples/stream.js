@@ -40,8 +40,8 @@ $(document).ready(function() {
       fetch_data_limit: 100,
       callbacks: callbacks,
       pagination: {span: 5, next_text: 'Next &rarr;', prev_text: '&larr; Previous'}
-    }
-  , data);
+    },
+   data);
 
   //Only for example: Stop ajax streaming beacause from localfile data size never going to empty.
   /*

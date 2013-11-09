@@ -89,7 +89,7 @@
       prev_text: '&laquo;',
       next_text: '&laquo;',
       per_page_select: true,
-      per_page_opts: [10,25,50],
+      per_page_opts: [10,25,50]
     }, opts);
 
     var p_classes = ['st_pagination'];
