@@ -460,7 +460,9 @@
       });
 
       //Start sorting initialy.
-      if(i == 0) $el.trigger('click');
+      if(i == 0 && _self.opts.auto_sorting) {
+        $el.trigger('click');
+      }
     });
   };
 
@@ -489,6 +491,11 @@
       if (t1 > t2) return (1 * order);
       return 0;
     }
+  };
+
+  _F.clear = function(){
+    if (this.opts.search_box) { $(this.opts.search_box).html('')};
+    $(this.main_container).html('');
   };
 
   StreamTable.extend = function (name, f ) {
