@@ -10,6 +10,9 @@ $(document).ready(function() {
   $('#found').hide();
 
   var callbacks = {
+    after_add: function(data){
+      //Do what ever you want.
+    },
     pagination: function(summary){
         if ($.trim($('#st_search').val()).length > 0){
           $found.text('Found : '+ summary.total).show();

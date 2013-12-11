@@ -276,7 +276,7 @@
 
       this.render(this.current_page);
       this.renderPagination(this.pageCount(), this.current_page);
-      this.execCallbacks('after_add');
+      this.execCallbacks('after_add', data);
       this.execCallbacks('pagination');
     }
 
