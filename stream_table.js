@@ -22,7 +22,7 @@
   StreamTable.VERSION = '1.1.0';
 
   $.fn.stream_table = function (opts, data) {
-    var $this = $(this); 
+    var $this = $(this);
     if ($this.data('st')) return;
     $this.data('st', new _StreamTable($this.selector, opts, data));
   };
@@ -45,7 +45,7 @@
     this.opts.callbacks = this.opts.callbacks || {};
 
     if (!this.view) $.error('Add view function in options.');
-    
+
     if (this.$container.get(0).tagName == 'TABLE') this.$container = this.$container.find('tbody');
 
     this.initPagination(this.opts.pagination || {});
@@ -106,11 +106,11 @@
 
     $(this.main_container).after('<div class="'+ this.paging_opts.container_class  +'"></div>');
 
-    this.$pagination = $('.' + p_classes.join('.')); 
+    this.$pagination = $('.' + p_classes.join('.'));
   };
 
   _F.bindEvents = function(){
-    var _self = this, 
+    var _self = this,
         search_box = this.opts.search_box;
 
     $(search_box).on('keyup', function(e){
@@ -150,7 +150,7 @@
 
   _F.addSearchBox = function(){
     if (this.opts.search_box) return;
-    $(this.main_container).before('<input name="search" type="text" id="st_search" class="st_search" placeholder="Type here...">');
+    $(this.main_container).before('<input name="search" type="text" id="st_search" class="st_search" placeholder="Search here...">');
     this.opts.search_box = '#st_search';
   };
 
@@ -172,8 +172,8 @@
         eval("textFunc = function(d) { return (" + cond_str.join(" + ' ' + ") + ").toUpperCase(); }");
       }else{
         textFunc = function(d) {
-          return d.join(' ').toUpperCase(); 
-        } 
+          return d.join(' ').toUpperCase();
+        }
       }
     }
 
@@ -181,7 +181,7 @@
   };
 
   _F.buildTextIndex = function(data){
-    var i = 0, l = data.length; 
+    var i = 0, l = data.length;
 
     if (!this.textFunc) this.textFunc = this._makeTextFunc(data[0]);
 
@@ -190,8 +190,8 @@
   };
 
   _F.render = function(page){
-    var i = (page * this.paging_opts.per_page), 
-        l = (i + this.paging_opts.per_page), 
+    var i = (page * this.paging_opts.per_page),
+        l = (i + this.paging_opts.per_page),
         eles = [],
         index,
         d = this.has_sorting ? this.getIndex() : this.getData();
@@ -207,8 +207,13 @@
         eles.push(this.view(d[i], (i+1)));
       }
     }
-    
+
     this.$container.html(eles);
+  };
+
+  _F.clearAndBuildTextIndex = function(data){
+    this.text_index = []
+    this.buildTextIndex(data)
   };
 
   _F.search = function(text){
@@ -223,7 +228,7 @@
     }else{
       this.searchInData(q);
       this.render(0);
-    } 
+    }
 
     this.current_page = 0;
     this.renderPagination(this.pageCount(), this.current_page);
@@ -231,9 +236,9 @@
   };
 
   _F.searchInData = function(text){
-    var result = [], 
-        i = 0, 
-        l = this.text_index.length, 
+    var result = [],
+        i = 0,
+        l = this.text_index.length,
         t = text.toUpperCase(),
         d = this.has_sorting ? this.records_index : this.data;
 
@@ -336,7 +341,7 @@
   _F.paginate = function(page){
     var page_count = this.pageCount();
 
-    if(page == 'prev'){ 
+    if(page == 'prev'){
       page = this.current_page - 1;
     }else if (page == 'next'){
       page = this.current_page + 1;
@@ -356,10 +361,10 @@
     return this.current_page;
   };
 
-  // Render Pagination call after new data added or search 
+  // Render Pagination call after new data added or search
   _F.renderPagination = function(page_count, current_page){
-    var i = 0, 
-        l = page_count, 
+    var i = 0,
+        l = page_count,
         links = [ '<ul class="'+ this.paging_opts.ul_class +'">'],
         span = this.paging_opts.span,
         center = Math.ceil(span/2);
@@ -422,10 +427,10 @@
     if (type == 'pagination'){
       var f = this.paging_opts.per_page * this.current_page;
       args = {
-        from:  (f + 1), 
+        from:  (f + 1),
         to:    (this.paging_opts.per_page + f),
-        total: this.dataLength(), 
-        page:  this.current_page 
+        total: this.dataLength(),
+        page:  this.current_page
       }
 
       if (args['total'] == 0) args['from'] = 0;
@@ -441,8 +446,8 @@
     $(this.main_container + ' [data-sort]').each(function(i){
       var $el = $(this)
           ,arr = $el.data('sort').split(':')
-          ,data = { dir: arr[1] || 'asc', 
-                    type: arr[2] || 'string', 
+          ,data = { dir: arr[1] || 'asc',
+                    type: arr[2] || 'string',
                     field: arr[0] };
 
       _self.sorting_opts[data.field] = {dir: data.dir, type: data.type, field: data.field }
@@ -452,11 +457,14 @@
 
         $this.addClass(e.data.dir);
         _self.current_sorting = {dir: e.data.dir, type: e.data.type, field: e.data.field};
-        _self.sort(e.data);  
+        _self.sort(e.data);
         _self.render(_self.current_page);
 
-        e.data.dir = e.data.dir == 'asc' ? 'desc' : 'asc'; 
+        e.data.dir = e.data.dir == 'asc' ? 'desc' : 'asc';
         $(this).removeClass(e.data.dir);
+
+        if(_self.opts.callbacks['after_sort'])
+          _self.execCallbacks('after_sort');
       });
 
       //Start sorting initialy.
@@ -467,14 +475,14 @@
   };
 
   _F.sort = function(options){
-    options.order = options.dir == 'asc' ? 1 : -1; 
+    options.order = options.dir == 'asc' ? 1 : -1;
 
     return this.getIndex().sort(this._sortingFunc(this.data, options));
   };
 
-  _F._sortingFunc = function(data, options){ 
+  _F._sortingFunc = function(data, options){
     var field = options.field, order = options.order, type = options.type;
-    
+
     //return this.sortingFuntions[type];
 
     if (type ==  'number'){
@@ -487,7 +495,7 @@
       var t1 = data[i][field].toLowerCase()
         ,t2 = data[j][field].toLowerCase();
 
-      if (t1 < t2) return (-1 * order); 
+      if (t1 < t2) return (-1 * order);
       if (t1 > t2) return (1 * order);
       return 0;
     }
