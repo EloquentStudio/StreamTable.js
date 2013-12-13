@@ -178,6 +178,8 @@ var callbacks = {
 
 3. before_add: This will execute before adding data. One use is to change data format to one that is compatible with streamTable. Remember to return the changed data. i.e if the data format is like {1: ['user-1', 10], 2: ['user-2', 100]}, we can convert it to an array of objects or an array of arrays, according to your view template.
 
+4. after_sort: After sort callback.
+
 After the conversion, the data MUST look like this:
 
 	[[1,'user-1', 10], [2,'user-2', 100]] 
