@@ -104,7 +104,13 @@
     this.paging_opts.per_page_class = ['st_per_page', opts.per_page_class].join(' ');
     this.opts.pagination = this.paging_opts;
 
-    $(this.main_container).after('<div class="'+ this.paging_opts.container_class  +'"></div>');
+    var html = '<div class="'+ this.paging_opts.container_class  +'"></div>';
+
+    if(this.paging_opts.container){
+      $(this.paging_opts.container).html(html);
+    }else{
+      $(this.main_container).after(html);
+    }
 
     this.$pagination = $('.' + p_classes.join('.'));
   };
@@ -188,7 +194,6 @@
     if (!this.textFunc) {
       this.textFunc = this._makeTextFunc(data[0]);
     }
-    console.log(this.textFunc)
 
     for(i; i < l; i++){
       this.text_index.push(this.textFunc(data[i]).toUpperCase());
