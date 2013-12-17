@@ -1,6 +1,6 @@
 /*
  * StreamTable.js
- * version: 1.1.0 (28/7/2013)
+ * version: 1.1.1 (17/12/2013)
  *
  * Licensed under the MIT:
  *   http://www.opensource.org/licenses/mit-license.php
@@ -157,22 +157,24 @@
   _F._makeTextFunc = function(record){
     var fields = this.opts.fields, cond_str = [], textFunc, is_array = false;
 
-    if (record.constructor == Object){
+    if(typeof fields == 'function'){
+       textFunc = fields;
+    } else if (record.constructor == Object){
       fields = fields || Object.keys(record)
 
       for (var i = 0, l = fields.length; i < l; i++){
         cond_str.push("d."+ fields[i]);
       }
-      eval("textFunc = function(d) { return (" + cond_str.join(" + ' ' + ") + ").toUpperCase(); }");
+      eval("textFunc = function(d) { return (" + cond_str.join(" + ' ' + ") + "); }");
     }else{
       if (fields){
         for(var i = 0, l = fields.length; i < l ; i++){
           cond_str.push("d["+ fields[i] + "]");
         }
-        eval("textFunc = function(d) { return (" + cond_str.join(" + ' ' + ") + ").toUpperCase(); }");
+        eval("textFunc = function(d) { return (" + cond_str.join(" + ' ' + ") + "); }");
       }else{
         textFunc = function(d) {
-          return d.join(' ').toUpperCase();
+          return d.join(' ');
         }
       }
     }
@@ -183,10 +185,14 @@
   _F.buildTextIndex = function(data){
     var i = 0, l = data.length;
 
-    if (!this.textFunc) this.textFunc = this._makeTextFunc(data[0]);
+    if (!this.textFunc) {
+      this.textFunc = this._makeTextFunc(data[0]);
+    }
+    console.log(this.textFunc)
 
-    for(i; i < l; i++)
-      this.text_index.push(this.textFunc(data[i]));
+    for(i; i < l; i++){
+      this.text_index.push(this.textFunc(data[i]).toUpperCase());
+    }
   };
 
   _F.render = function(page){

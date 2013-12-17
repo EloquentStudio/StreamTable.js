@@ -29,8 +29,22 @@ $(document).ready(function() {
       callbacks: callbacks,
       pagination: {span: 5, next_text: 'Next &rarr;', prev_text: '&larr; Previous'}
     },
+    data
+  );
+
+  /* 
+  NOTE: Search only for year. If you define fields function then it must return text.
+  You have complex nested record data then use function.
+  st = StreamTable('#stream_table',
+    { view: view, 
+      per_page: 10, 
+      callbacks: callbacks,
+      pagination: {span: 5, next_text: 'Next &rarr;', prev_text: '&larr; Previous'},
+      fields: function(r){ return [ r.year, r.rating].join(' ')} // OR fields: ['year' , 'rating']
+    },
    data
   );
+  */
 
   // Jquery plugin
   //$('#stream_table').stream_table({view: view}, data)

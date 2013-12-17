@@ -122,10 +122,23 @@ If you have already searcbox then you can set the selector.
 
     search_box: '#my-searchb0x'
 	
-You can enable search on specific fields
+StreamTable make index out of data for searching text. Default it get all top level fields and make index. 
+If you want to enable search on specific fields or you have complex nested fields. 
 
-    fields: ['id', 'name']  //if each record is an object, then mention the field names. i.e {user: {id: 1, name: 'user', amount: 2}}
+    fields: ['id', 'name']  //if each record is an object, then mention the field names. i.e {id: 1, name: 'user', amount: 2}
     fields: [0, 2]          //if each record is an array, then mention the index of fields. i.e [1, 'User', '2']
+
+    // If in data you have nested json object i.e { address: {pin: 23123}}
+    fields: ['address.pin']
+
+    // If in data you have nested json object array. i.e {name: 'jiren', contacts: [{email: 'jirenpatel@gmail.com }, {email: 'test@test.com' }]}
+    // In this case define text function which return text string.
+    fields: function(record) { 
+      return [ 
+        record.name,
+        $.map(record.contacts, function(contact) { return contact.email } )
+      ].join(' ')  
+     }
     
 Pagination Options:
 -------------------
