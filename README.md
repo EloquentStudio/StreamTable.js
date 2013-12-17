@@ -147,14 +147,14 @@ Pagination Options:
 pagination: {
   container: '#pagination',              // Default Pagination added after table. If you want to chanage pagination location then give selector 
   span: 5,                               //Max Pagination span window.
-	next_text: 'Next &rarr;',              
-	prev_text: '&larr; Previous',
-	container_class: '.users-pagination',  //Add pagination div class. Default  is .st_pagination.
-	ul_class: '.larger-pagination',        //Add pagination ul class. Default is  .pagination.
-	per_page_select: true,                 //Show per page select box. Default us true.
-	per_page_opts: [10, 25, 50],           //Per Page select box options. Default is [10, 25, 50].
-	per_page_class: '.select-box'          //Per page select box class. Default is .st_per_page.
-	per_page: 20                           //Show number of record per page. Defalut 10.
+  next_text: 'Next &rarr;',              
+  prev_text: '&larr; Previous',
+  container_class: '.users-pagination',  //Add pagination div class. Default  is .st_pagination.
+  ul_class: '.larger-pagination',        //Add pagination ul class. Default is  .pagination.
+  per_page_select: true,                 //Show per page select box. Default us true.
+  per_page_opts: [10, 25, 50],           //Per Page select box options. Default is [10, 25, 50].
+  per_page_class: '.select-box'          //Per page select box class. Default is .st_per_page.
+  per_page: 20                           //Show number of record per page. Defalut 10.
 }
 ```  
 
