@@ -145,6 +145,7 @@ Pagination Options:
 
 ```javascript
 pagination: {
+  container: '#pagination',              // Default Pagination added after table. If you want to chanage pagination location then give selector 
   span: 5,                               //Max Pagination span window.
 	next_text: 'Next &rarr;',              
 	prev_text: '&larr; Previous',
