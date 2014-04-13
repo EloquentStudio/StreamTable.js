@@ -13,21 +13,13 @@
     function initializeStreamTable(elementId) {
         var streamTableStr = "streamtable";
     
-        //var templateId = $("#"+elementId).attr("id")+"_"+templateStr+containerStr+"_"+templateStr;
         var streamTableContainerId = $("#"+elementId).attr("id");
         var streamTableStSearchId = $("#"+elementId).attr("id")+"_"+streamTableStr+"_st_search";
-        console.log("streamTableStSearchId: "+streamTableStSearchId);
-        //var paginationContainerClass = $("#"+elementId).attr("id")+"_paginationcontainer";
         var paginationContainerId = "#"+$("#"+elementId).attr("id")+"_paginationcontainer";
-        //var paginationUlClass = $("#"+elementId).attr("id")+"_"+streamTableStr+"paginationul";
-        //var streamTableContainerId = elementId+"_"+streamTableStr+"container";
         var streamTableId = streamTableContainerId+"_"+streamTableStr;
-        console.log("activateStreamTable, elementId: "+elementId+", streamTableId: "+streamTableId+", streamTableContainerId: "+streamTableContainerId); // nitialcontainerAnchorstreamtablecontainer_streamtable
         var summaryId = streamTableId+"_summary";
         var foundId = streamTableId+"_found";
         var recordCountId = streamTableId+"_record_count";
-        console.log("recordCountId :"+recordCountId);
-        //console.log("templateId: "+templateId);
         var data = Movies[1], html = $.trim($("#template").html()), template = Mustache.compile(html);
         var view = function(record, index){
           return template({record: record, index: index});
@@ -94,7 +86,7 @@
     <div id="streamTable_container1" class="streamtable_container">
       <div class='example'>
         <div class="title" onclick="initializeStreamTable('streamTable_container1');">
-          <h1><!--<span class="glyphicon glyphicon-filter"> --></span>StreamTable.js</h1>
+            <br>
           <p class='lead'> Table 1 - Click here to init</p>
         </div>
         <div class="progress progress-striped active">
@@ -124,7 +116,7 @@
     <div id="streamTable_container2" class="streamtable_container">
       <div class='example'>
         <div class="title" onclick="initializeStreamTable('streamTable_container2');">
-          <h1><!--<span class="glyphicon glyphicon-filter"> --></span>StreamTable.js</h1>
+            <br>
           <p class='lead'> Table 2 - Click here to init</p>
         </div>
         <div class="progress progress-striped active">
