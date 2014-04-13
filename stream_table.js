@@ -145,8 +145,8 @@
 
       current_page = _self.paginate(page);
       if (current_page >= 0) {
-        $((_self.paging_opts.container+' .active')).removeClass('active');
-        $((_self.paging_opts.container+' li[data-page='+ current_page +']')).addClass('active');
+        $((_self.paging_opts.container+' .st_pagination .active')).removeClass('active');
+        $((_self.paging_opts.container+' .st_pagination li[data-page='+ current_page +']')).addClass('active');
       }
 
       return false;
