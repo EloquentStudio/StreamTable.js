@@ -157,7 +157,7 @@
   _F.addSearchBox = function(){
     if (this.opts.search_box) return;
     $(this.main_container).before('<input name="search" type="text" id="st_search" class="st_search" placeholder="Search here...">');
-    this.opts.search_box = '#st_search';
+    this.opts.search_box = 'st_search';
   };
 
   _F._makeTextFunc = function(record){
