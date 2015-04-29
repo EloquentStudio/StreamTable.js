@@ -300,7 +300,12 @@
   };
 
   _F.fetchData = function(){
-    var _self = this, params = {q: this.last_search_text}
+    var _self = this, 
+        params = this.opts.params || {};
+    
+    if (!params['q']) {
+      params['q'] = this.last_search_text;
+    }
 
     if (this.opts.fetch_data_limit) {
       params['limit'] = this.opts.fetch_data_limit;
