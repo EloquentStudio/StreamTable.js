@@ -315,7 +315,7 @@
     $.getJSON(this.opts.data_url, params).done(function(data){
       data = _self.addData(data);
 
-      if (params.limit != null && (!data || !data.length ) ) {
+      if (params.limit != null && (!data || !data.length || data.length < params.limit) ) {
         _self.stopStreaming();
       }else{
         _self.setStreamInterval();
