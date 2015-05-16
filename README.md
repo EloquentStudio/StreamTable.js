@@ -38,10 +38,11 @@ Here is a view function that has two arguments: JSON 'record' and the index. I h
  
 
 ```javascript
-var template = Mustache.compile($.trim($("#template").html()));
+var template = $.trim($("#template").html());
+Mustache.parse(template);
 
 var view = function(record, index){
-  return template({record: record, index: index});
+  return Mustache.render(template, {record: record, index: index});
 };
 ```
 	
