@@ -112,12 +112,12 @@
       $(this.main_container).after(html);
     }
 
-    this.$pagination = $('.' + p_classes.join('.'));
+    this.$pagination = $( (this.paging_opts.container+' .' + p_classes.join('.') ) );
   };
 
   _F.bindEvents = function(){
     var _self = this,
-        search_box = this.opts.search_box;
+        search_box = '#'+this.opts.search_box;
 
     $(search_box).on('keyup', function(e){
       _self.search($(this).val());
@@ -145,8 +145,8 @@
 
       current_page = _self.paginate(page);
       if (current_page >= 0) {
-        $('.st_pagination .active').removeClass('active');
-        $('.st_pagination li[data-page='+ current_page +']').addClass('active');
+        $((_self.paging_opts.container+' .st_pagination .active')).removeClass('active');
+        $((_self.paging_opts.container+' .st_pagination li[data-page='+ current_page +']')).addClass('active');
       }
 
       return false;
@@ -157,7 +157,7 @@
   _F.addSearchBox = function(){
     if (this.opts.search_box) return;
     $(this.main_container).before('<input name="search" type="text" id="st_search" class="st_search" placeholder="Search here...">');
-    this.opts.search_box = '#st_search';
+    this.opts.search_box = 'st_search';
   };
 
   _F._makeTextFunc = function(record){
