@@ -422,7 +422,12 @@
         html.push('<option value="'+ arr[i] + '">'+ arr[i] +'</option>');
 
     html.push('</select>');
-    $(this.main_container).before(html.join(''));
+    
+    if(typeof this.paging_opts.per_page_container != 'undefined') {
+        $(this.paging_opts.per_page_container).html(html.join(''));
+    } else {
+        $(this.main_container).before(html.join(''));   
+    }
   };
 
   _F.renderByPerPage = function(per_page){
