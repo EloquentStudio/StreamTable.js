@@ -95,7 +95,7 @@
     var p_classes = ['st_pagination'];
 
     if (opts.container_class){
-      p_classes = [].concat.apply(p_classes, [opts.container_class])
+      p_classes = [].concat.apply(p_classes, [opts.container_class]);
     }
 
     this.paging_opts.per_page = this.paging_opts.per_page_opts[0] || 10;
@@ -108,11 +108,11 @@
 
     if(this.paging_opts.container){
       $(this.paging_opts.container).html(html);
+      this.$pagination = $('.' + p_classes.join('.'), this.paging_opts.container);
     }else{
       $(this.main_container).after(html);
+      this.$pagination = $(this.main_container).next();
     }
-
-    this.$pagination = $('.' + p_classes.join('.'));
   };
 
   _F.bindEvents = function(){
@@ -145,8 +145,8 @@
 
       current_page = _self.paginate(page);
       if (current_page >= 0) {
-        $('.st_pagination .active').removeClass('active');
-        $('.st_pagination li[data-page='+ current_page +']').addClass('active');
+        $('.active', _self.$pagination).removeClass('active');
+        $('li[data-page='+ current_page +']', _self.$pagination).addClass('active');
       }
 
       return false;
