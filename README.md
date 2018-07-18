@@ -213,12 +213,14 @@ For adding sorting add sort options to table headers.
 ```html
 <th data-sort="name:asc">Name (sort)</th>
 <th data-sort="director:desc">Director (sort)</th>
+<th data-sort="balance:desc:number">Balance (sort)</th>
 ```
 
 - 'name' is json record field and second option is initial sorting order.
 - While streaming if you want to enable live sorting then set option to 'auto_sorting' to 'true' in streamtable options.
 - Default auto sorting is disabled while streaming.
 - If you streaming large amount of data then preferable to set auto_sorting off because sorting will happened every time data add so it will take time to sort.
+- You can specify the data type as 'number' if you want to sort numbers instead of strings
 
 
 Complete Options for reference:
