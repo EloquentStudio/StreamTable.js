@@ -271,7 +271,10 @@
     data = this.execCallbacks('before_add', data) || data;
 
     if (data.length){
-      var i = this.data.length, l = data.length + i;
+      var i = this.data.length, l = data.length + i, render = false;
+
+      if (this.data.length < this.opts.fetch_data_limit)
+        render = true;
 
       this.buildTextIndex(data);
       this.data = this.data.concat(data);
@@ -290,7 +293,9 @@
         this.sort(this.current_sorting);
       }
 
-      this.render(this.current_page);
+      if (render)
+        this.render(this.current_page);
+
       this.renderPagination(this.pageCount(), this.current_page);
       this.execCallbacks('after_add', data);
       this.execCallbacks('pagination');
