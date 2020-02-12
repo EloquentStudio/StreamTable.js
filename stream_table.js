@@ -89,7 +89,7 @@
       prev_text: '&laquo;',
       next_text: '&laquo;',
       per_page_select: true,
-      per_page_opts: [10,25,50]
+      per_page_opts: [[10,25,50,-1],[10,25,50,"All"]]
     }, opts);
 
     var p_classes = ['st_pagination'];
@@ -98,7 +98,7 @@
       p_classes = [].concat.apply(p_classes, [opts.container_class]);
     }
 
-    this.paging_opts.per_page = this.paging_opts.per_page_opts[0] || 10;
+    this.paging_opts.per_page = this.paging_opts.per_page_opts[0][0] || 10;
     this.paging_opts.container_class = p_classes.join(' ');
     this.paging_opts.ul_class = ['pagination', opts.ul_class].join(' ');
     this.paging_opts.per_page_class = ['st_per_page', opts.per_page_class].join(' ');
@@ -207,6 +207,9 @@
         index,
         d = this.has_sorting ? this.getIndex() : this.getData();
 
+        if(l == -1){
+          l = d.length;
+        }
     if (d.length < l) l = d.length;
 
     if (this.has_sorting){
@@ -418,8 +421,8 @@
     html = ['<select size="1" name="per_page" class="'+ this.paging_opts.per_page_class +'">'];
     arr = this.paging_opts.per_page_opts;
 
-    for(var i = 0, l = arr.length; i < l; i ++)
-        html.push('<option value="'+ arr[i] + '">'+ arr[i] +'</option>');
+    for(var i = 0, l = arr[0].length; i < l; i ++)
+        html.push('<option value="'+ arr[0][i] + '">'+ arr[1][i] +'</option>');
 
     html.push('</select>');
     $(this.main_container).before(html.join(''));
