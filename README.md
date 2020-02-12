@@ -153,7 +153,7 @@ pagination: {
   container_class: '.users-pagination',  //Add pagination div class. Default  is .st_pagination.
   ul_class: '.larger-pagination',        //Add pagination ul class. Default is  .pagination.
   per_page_select: true,                 //Show per page select box. Default us true.
-  per_page_opts: [10, 25, 50],           //Per Page select box options. Default is [10, 25, 50].
+  per_page_opts: [[10, 25, 50,-1],[10,25,50,"All"],          //Per Page select box options. Default is [[10, 25, 50, -1],[10,25,50,"All"].
   per_page_class: '.select-box'          //Per page select box class. Default is .st_per_page.
   per_page: 20                           //Show number of record per page. Defalut 10.
 }
@@ -240,7 +240,7 @@ var options = {
 		container_class: '.users-pagination', 
 		ul_class: '.larger-pagination',       
 		per_page_select: true,                 
-		per_page_opts: [10,25,50],            
+		per_page_opts: [[10, 25, 50,-1],[10,25,50,"All"],
 		per_page_class: '.select-box',       
 		per_page: 20      
 	},
